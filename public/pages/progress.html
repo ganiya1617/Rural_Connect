@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Learning Progress – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <span class="badge badge-green" style="margin-bottom: 0.5rem;">Analytics & Milestones</span>
+      <h1 style="font-size: 2.2rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Learning Progress & Achievements</h1>
+      <p style="color: var(--secondary-text); font-size: 1.05rem;">
+        Visualize your learning curve, completed educational materials, and assessment scores.
+      </p>
+    </div>
+
+    <!-- Progress Overview Panel -->
+    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 style="font-size: 1.25rem;">Overall Curriculum Completion</h3>
+        <span style="font-size: 1.25rem; font-weight: 700; color: var(--accent-green);" id="overall-percentage">0%</span>
+      </div>
+      <div class="progress-container" style="height: 14px;">
+        <div class="progress-bar-fill" id="overall-progress-bar" style="width: 0%;"></div>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--secondary-text); margin-top: 0.5rem;" id="progress-summary-text">
+        0 out of 0 available portal resources finished.
+      </div>
+    </div>
+
+    <!-- Subject Breakdown & Quiz Stats Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+      <!-- Subject Distribution -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Subject-wise Completed Lessons</h3>
+        </div>
+        <div class="panel-body" id="subject-distribution-container">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+
+      <!-- Quiz Stats Summary -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Assessment Performance</h3>
+        </div>
+        <div class="panel-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="background: #F8FAFC; padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--borders); text-align: center;">
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--primary-blue);" id="stat-tests-taken">0</div>
+              <div style="font-size: 0.82rem; color: var(--secondary-text);">Total Assessments</div>
+            </div>
+            <div style="background: #F8FAFC; padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--borders); text-align: center;">
+              <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-green);" id="stat-mean-score">0%</div>
+              <div style="font-size: 0.82rem; color: var(--secondary-text);">Average Score</div>
+            </div>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--secondary-text); line-height: 1.6;">
+            Regular practice tests help solidify conceptual clarity. Challenge yourself across different topics to boost your average score!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Resources Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Finished Lessons History</h3>
+        <a href="/resources" class="btn btn-outline btn-sm">Find More Lessons</a>
+      </div>
+      <div class="panel-body">
+        <div id="completed-resources-table-wrapper">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/progress.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
+  <!-- Simple Nav -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <div class="nav-actions">
+        <span style="font-size: 0.9rem; color: var(--secondary-text);">New to RuralConnect?</span>
+        <a href="/register" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2.5rem 1rem;">
+    <div style="width: 100%; max-width: 440px;">
+      <div class="card" style="padding: 2.5rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.6rem; color: var(--deep-navy); margin-bottom: 0.4rem;">Welcome Back</h2>
+          <p style="color: var(--secondary-text); font-size: 0.925rem;">Sign in to access your resources and opportunities</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label class="form-label" for="password" style="margin-bottom: 0;">Password</label>
+            </div>
+            <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+            Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--borders); font-size: 0.85rem; color: var(--secondary-text);">
+          <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--deep-navy);">Sample Test Accounts:</div>
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <div><strong>Student:</strong> arjun.patel@example.com / Student@1234</div>
+            <div><strong>Mentor:</strong> priya.sharma@ruralconnect.in / Mentor@1234</div>
+            <div><strong>Admin:</strong> admin@ruralconnect.in / Admin@1234</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <main style="max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.2rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Profile Settings</h1>
+      <p style="color: var(--secondary-text); font-size: 1.05rem;">
+        Manage your personal information, educational credentials, and account security.
+      </p>
+    </div>
+
+    <!-- Personal & Role Specific Information Form -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Personal & Academic Details</h3>
+      </div>
+      <div class="panel-body">
+        <form id="profile-details-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="profile-name">Full Name</label>
+              <input type="text" id="profile-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-email">Email Address</label>
+              <input type="email" id="profile-email" class="form-control" disabled style="background: #F1F5F9; cursor: not-allowed;">
+            </div>
+          </div>
+
+          <!-- Student specific fields container -->
+          <div id="student-fields" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="profile-village">Village / Town</label>
+                <input type="text" id="profile-village" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profile-district">District</label>
+                <input type="text" id="profile-district" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profile-state">State</label>
+                <input type="text" id="profile-state" class="form-control">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="profile-class">Class / Standard</label>
+                <input type="text" id="profile-class" class="form-control" placeholder="e.g. 10th or 12th">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profile-school">School / College</label>
+                <input type="text" id="profile-school" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profile-board">Board / Univ</label>
+                <input type="text" id="profile-board" class="form-control" placeholder="e.g. CBSE / State">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profile-interests">Subjects of Interest (comma separated)</label>
+              <input type="text" id="profile-interests" class="form-control" placeholder="Science, Mathematics, Coding">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profile-bio">Bio / Aspirations</label>
+              <textarea id="profile-bio" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- Mentor specific fields container -->
+          <div id="mentor-fields" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="mentor-designation">Designation</label>
+                <input type="text" id="mentor-designation" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="mentor-organization">Organization</label>
+                <input type="text" id="mentor-organization" class="form-control">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="mentor-expertise">Expertise (comma separated)</label>
+                <input type="text" id="mentor-expertise" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="mentor-subjects">Subjects Taught (comma separated)</label>
+                <input type="text" id="mentor-subjects" class="form-control">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="mentor-experience">Years of Experience</label>
+                <input type="number" id="mentor-experience" class="form-control" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="mentor-location">Location</label>
+                <input type="text" id="mentor-location" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="mentor-bio">Professional Bio</label>
+              <textarea id="mentor-bio" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="save-profile-btn">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Security & Password Change -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Change Password</h3>
+      </div>
+      <div class="panel-body">
+        <form id="password-form" style="max-width: 480px;">
+          <div class="form-group">
+            <label class="form-label" for="current-password">Current Password</label>
+            <input type="password" id="current-password" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="new-password">New Password (Min 8 characters, 1 uppercase, 1 digit)</label>
+            <input type="password" id="new-password" class="form-control" required minlength="8">
+          </div>
+
+          <button type="submit" class="btn btn-outline" id="change-pwd-btn">
+            Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>

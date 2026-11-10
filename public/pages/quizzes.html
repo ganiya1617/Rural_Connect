@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Quizzes – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <main style="max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem;">
+    <!-- Quizzes List View -->
+    <div id="quiz-list-section">
+      <div style="margin-bottom: 2rem;">
+        <span class="badge badge-blue" style="margin-bottom: 0.5rem;">Knowledge Check</span>
+        <h1 style="font-size: 2.2rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Subject Practice Quizzes</h1>
+        <p style="color: var(--secondary-text); font-size: 1.05rem;">
+          Take timed multiple-choice assessments, test your comprehension, and earn instant evaluations.
+        </p>
+      </div>
+
+      <!-- Quiz Cards -->
+      <div class="content-grid" id="quizzes-grid" style="margin-bottom: 3rem;">
+        <div class="loading-spinner" style="margin: 3rem auto; grid-column: 1 / -1;"></div>
+      </div>
+
+      <!-- Past Attempts History Table -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>My Quiz Attempt History</h3>
+        </div>
+        <div class="panel-body">
+          <div id="quiz-history-container">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Quiz Runner View (Hidden by default) -->
+    <div id="quiz-runner-section" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <button class="btn btn-outline btn-sm" onclick="exitQuiz()">← Exit to Quiz List</button>
+        <div id="quiz-timer" class="badge badge-warning" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+          ⏱️ Time Left: <span id="timer-display">--:--</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 2.5rem; margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--borders); padding-bottom: 1rem;">
+          <span class="badge badge-blue" id="active-quiz-subject">Subject</span>
+          <h2 id="active-quiz-title" style="margin-top: 0.5rem; font-size: 1.6rem; color: var(--deep-navy);">Quiz Title</h2>
+          <div style="color: var(--secondary-text); font-size: 0.9rem; margin-top: 0.25rem;">
+            Question <span id="current-question-idx">1</span> of <span id="total-questions-count">0</span>
+          </div>
+        </div>
+
+        <!-- Question Prompt -->
+        <h3 id="question-text" style="font-size: 1.25rem; font-weight: 500; margin-bottom: 1.5rem; line-height: 1.5;">
+          Loading question...
+        </h3>
+
+        <!-- Options Container -->
+        <div id="options-container" style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 2rem;">
+          <!-- Dynamically populated options -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--borders); padding-top: 1.5rem;">
+          <button id="prev-question-btn" class="btn btn-outline" onclick="prevQuestion()" disabled>← Previous</button>
+          <div style="display: flex; gap: 0.75rem;">
+            <button id="next-question-btn" class="btn btn-primary" onclick="nextQuestion()">Next Question →</button>
+            <button id="submit-quiz-btn" class="btn btn-success" onclick="submitCurrentQuiz()" style="display: none;">Submit Quiz & Calculate Score</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Results Modal / View (Hidden by default) -->
+    <div id="quiz-results-section" style="display: none;">
+      <div class="card" style="padding: 2.5rem; text-align: center; margin-bottom: 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+        <h2 style="font-size: 1.8rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Quiz Completed!</h2>
+        <p style="color: var(--secondary-text); margin-bottom: 1.5rem;">Here is your performance breakdown</p>
+
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
+          <div style="padding: 1rem 1.5rem; background: #F8FAFC; border: 1px solid var(--borders); border-radius: var(--radius-md);">
+            <div style="font-size: 2rem; font-weight: 700; color: var(--primary-blue);" id="result-score">0 / 0</div>
+            <div style="font-size: 0.85rem; color: var(--secondary-text);">Score Obtained</div>
+          </div>
+          <div style="padding: 1rem 1.5rem; background: #F8FAFC; border: 1px solid var(--borders); border-radius: var(--radius-md);">
+            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-green);" id="result-percentage">0%</div>
+            <div style="font-size: 0.85rem; color: var(--secondary-text);">Percentage</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="exitQuiz()">Return to All Quizzes</button>
+      </div>
+
+      <!-- Question-by-Question Solution Analysis -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Detailed Solution Review</h3>
+        </div>
+        <div class="panel-body" id="solution-breakdown-container">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/quizzes.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholarships & Government Schemes – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <main style="max-width: 1240px; margin: 0 auto; padding: 2.5rem 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <span class="badge badge-warning" style="margin-bottom: 0.5rem;">Financial Aid & Grants</span>
+      <h1 style="font-size: 2.2rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Scholarships & Government Schemes</h1>
+      <p style="color: var(--secondary-text); font-size: 1.05rem;">
+        Discover verified financial assistance, state fellowships, and educational welfare programs for rural learners.
+      </p>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="card" style="padding: 1.25rem; margin-bottom: 2rem;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: center;">
+        <input type="text" id="scheme-search" class="form-control" placeholder="🔍 Search scholarship name, eligibility, or ministry...">
+        <select id="scheme-type-filter" class="form-control">
+          <option value="">All Categories</option>
+          <option value="SCHOLARSHIP">Scholarships</option>
+          <option value="GOVERNMENT_SCHEME">Government Welfare Schemes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Schemes Grid -->
+    <div class="content-grid" id="schemes-grid">
+      <div class="loading-spinner" style="margin: 3rem auto; grid-column: 1 / -1;"></div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scholarships.js"></script>
+</body>
+</html>

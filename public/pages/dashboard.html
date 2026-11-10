@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <!-- Top Nav -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <aside class="portal-sidebar">
+      <div class="portal-user-badge">
+        <div class="user-avatar-placeholder" id="sidebar-avatar">S</div>
+        <div style="overflow: hidden;">
+          <div class="user-meta-name" id="sidebar-name">Student Name</div>
+          <div class="user-meta-role">Student Portal</div>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li><a href="/dashboard" class="active">📊 Overview</a></li>
+        <li><a href="/resources">📚 Learning Resources</a></li>
+        <li><a href="/mentors">🤝 Find Mentors</a></li>
+        <li><a href="/quizzes">🎯 Practice Quizzes</a></li>
+        <li><a href="/progress">📈 My Progress</a></li>
+        <li><a href="/scholarships">🏛️ Schemes & Scholarships</a></li>
+        <li><a href="/jobs">💼 Jobs & Internships</a></li>
+        <li><a href="/profile">⚙️ My Profile</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="portal-main">
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <h2 id="welcome-msg">Welcome back!</h2>
+          <p id="welcome-sub">Here is a summary of your educational journey and recommendations.</p>
+        </div>
+        <div>
+          <a href="/resources" class="btn btn-primary">Browse All Resources</a>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-label">Completed Lessons</div>
+          </div>
+          <div class="stat-icon green">✅</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-value" id="stat-bookmarks">0</div>
+            <div class="stat-label">Saved Resources</div>
+          </div>
+          <div class="stat-icon blue">🔖</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-value" id="stat-quizzes">0</div>
+            <div class="stat-label">Quizzes Completed</div>
+          </div>
+          <div class="stat-icon purple">📝</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-value" id="stat-avg-score">0%</div>
+            <div class="stat-label">Average Score</div>
+          </div>
+          <div class="stat-icon amber">⭐</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Recommended Resources Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recommended Study Material</h3>
+            <a href="/resources" style="font-size: 0.85rem; font-weight: 500;">View All →</a>
+          </div>
+          <div class="panel-body">
+            <div id="recommended-resources-list" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Activity</h3>
+          </div>
+          <div class="panel-body">
+            <ul class="activity-list" id="activity-feed">
+              <li class="empty-state" style="padding: 1.5rem 0;">No activity recorded yet.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Quiz Attempts & Scholarships Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Quiz History -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Quiz Performance</h3>
+            <a href="/quizzes" style="font-size: 0.85rem; font-weight: 500;">Take Quiz →</a>
+          </div>
+          <div class="panel-body">
+            <div id="recent-quiz-attempts">
+              <div class="empty-state" style="padding: 1.5rem 0;">You haven't attempted any quizzes yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Scholarships -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Scholarships You Can Apply For</h3>
+            <a href="/scholarships" style="font-size: 0.85rem; font-weight: 500;">Explore All →</a>
+          </div>
+          <div class="panel-body">
+            <div id="dashboard-scholarships">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

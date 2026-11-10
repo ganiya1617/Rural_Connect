@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <div class="nav-actions">
+        <span style="font-size: 0.9rem; color: var(--secondary-text);">Already have an account?</span>
+        <a href="/login" class="btn btn-outline btn-sm">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2.5rem 1rem;">
+    <div style="width: 100%; max-width: 560px;">
+      <div class="card" style="padding: 2.5rem;">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.6rem; color: var(--deep-navy); margin-bottom: 0.4rem;">Join RuralConnect</h2>
+          <p style="color: var(--secondary-text); font-size: 0.925rem;">Choose your role to get tailored access</p>
+        </div>
+
+        <!-- Role Toggle Tabs -->
+        <div style="display: flex; gap: 0.5rem; background: #F1F5F9; padding: 0.35rem; border-radius: var(--radius-sm); margin-bottom: 2rem;">
+          <button type="button" id="tab-student" class="btn" style="flex: 1; background: #ffffff; color: var(--primary-blue); font-weight: 600; box-shadow: var(--shadow-sm);" onclick="switchRole('student')">
+            🎒 I am a Student
+          </button>
+          <button type="button" id="tab-mentor" class="btn" style="flex: 1; background: transparent; color: var(--secondary-text);" onclick="switchRole('mentor')">
+            👨‍🏫 I am a Mentor / Teacher
+          </button>
+        </div>
+
+        <!-- Student Form -->
+        <form id="student-register-form">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name *</label>
+            <input type="text" id="name" class="form-control" placeholder="e.g. Rahul Verma" required minlength="2">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address *</label>
+            <input type="email" id="email" class="form-control" placeholder="rahul@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password * (Min 8 chars, 1 uppercase, 1 number)</label>
+            <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="8">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="village">Village / Town</label>
+              <input type="text" id="village" class="form-control" placeholder="e.g. Rampur">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="district">District</label>
+              <input type="text" id="district" class="form-control" placeholder="e.g. Vadodara">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="state">State</label>
+              <input type="text" id="state" class="form-control" placeholder="e.g. Gujarat">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="phone">Phone Number</label>
+              <input type="tel" id="phone" class="form-control" placeholder="+91 9876543210">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+            Create Student Account
+          </button>
+        </form>
+
+        <!-- Mentor Form -->
+        <form id="mentor-register-form" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="mentor-name">Full Name *</label>
+            <input type="text" id="mentor-name" class="form-control" placeholder="e.g. Dr. Sunita Rao" required minlength="2">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mentor-email">Email Address *</label>
+            <input type="email" id="mentor-email" class="form-control" placeholder="sunita@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mentor-password">Password *</label>
+            <input type="password" id="mentor-password" class="form-control" placeholder="••••••••" required minlength="8">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="designation">Designation *</label>
+              <input type="text" id="designation" class="form-control" placeholder="e.g. Assistant Professor" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="organization">Organization / College *</label>
+              <input type="text" id="organization" class="form-control" placeholder="e.g. Delhi University" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="expertise">Skills (comma separated)</label>
+              <input type="text" id="expertise" class="form-control" placeholder="Physics, Mathematics">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subjects">Subjects (comma separated)</label>
+              <input type="text" id="subjects" class="form-control" placeholder="Science, Physics">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="experience">Years of Experience</label>
+              <input type="number" id="experience" class="form-control" placeholder="5" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="location">Location / City</label>
+              <input type="text" id="location" class="form-control" placeholder="e.g. Pune">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="bio">Short Bio</label>
+            <textarea id="bio" class="form-control" placeholder="Tell students how you can help them..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+            Register as Mentor
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    function switchRole(role) {
+      const studentTab = document.getElementById('tab-student');
+      const mentorTab = document.getElementById('tab-mentor');
+      const studentForm = document.getElementById('student-register-form');
+      const mentorForm = document.getElementById('mentor-register-form');
+
+      if (role === 'student') {
+        studentTab.style.background = '#ffffff';
+        studentTab.style.color = 'var(--primary-blue)';
+        studentTab.style.fontWeight = '600';
+        studentTab.style.boxShadow = 'var(--shadow-sm)';
+
+        mentorTab.style.background = 'transparent';
+        mentorTab.style.color = 'var(--secondary-text)';
+        mentorTab.style.fontWeight = '500';
+        mentorTab.style.boxShadow = 'none';
+
+        studentForm.style.display = 'block';
+        mentorForm.style.display = 'none';
+      } else {
+        mentorTab.style.background = '#ffffff';
+        mentorTab.style.color = 'var(--accent-green)';
+        mentorTab.style.fontWeight = '600';
+        mentorTab.style.boxShadow = 'var(--shadow-sm)';
+
+        studentTab.style.background = 'transparent';
+        studentTab.style.color = 'var(--secondary-text)';
+        studentTab.style.fontWeight = '500';
+        studentTab.style.boxShadow = 'none';
+
+        mentorForm.style.display = 'block';
+        studentForm.style.display = 'none';
+      }
+    }
+
+    // Check query params (?role=mentor)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('role') === 'mentor') {
+      switchRole('mentor');
+    }
+  </script>
+</body>
+</html>

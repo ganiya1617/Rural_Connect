@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect with Mentors – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>RuralConnect</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <main style="max-width: 1240px; margin: 0 auto; padding: 2.5rem 1.5rem;">
+    <!-- Page Header -->
+    <div style="margin-bottom: 2rem;">
+      <span class="badge badge-green" style="margin-bottom: 0.5rem;">1-on-1 Guidance</span>
+      <h1 style="font-size: 2.2rem; color: var(--deep-navy); margin-bottom: 0.5rem;">Find a Mentor</h1>
+      <p style="color: var(--secondary-text); font-size: 1.05rem;">
+        Connect with dedicated teachers, researchers, and tech professionals volunteering to guide rural youth.
+      </p>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="card" style="padding: 1.25rem; margin-bottom: 2rem;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: center;">
+        <input type="text" id="mentor-search" class="form-control" placeholder="🔍 Search mentor name, organization, or topic...">
+        <select id="mentor-subject-filter" class="form-control">
+          <option value="">All Subjects</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Mathematics">Mathematics</option>
+          <option value="Science">Science</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Mentors Grid -->
+    <div class="content-grid" id="mentors-grid">
+      <div class="loading-spinner" style="margin: 3rem auto; grid-column: 1 / -1;"></div>
+    </div>
+
+    <!-- My Sent Requests Panel (Visible to logged-in students) -->
+    <div id="student-requests-container" style="margin-top: 3.5rem; display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Your Mentorship Requests & Status</h3>
+        </div>
+        <div class="panel-body">
+          <div id="student-requests-list">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mentorship Request Modal -->
+  <div class="modal-overlay" id="request-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-mentor-name">Send Mentorship Request</h3>
+        <button class="modal-close" onclick="closeModal('request-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modal-mentor-id">
+        <div class="form-group">
+          <label class="form-label" for="request-message">Introduce yourself and what guidance you need:</label>
+          <textarea id="request-message" class="form-control" rows="4" placeholder="Hello! I am a student preparing for engineering exams and would love your guidance on physics fundamentals..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('request-modal')">Cancel</button>
+        <button class="btn btn-primary" id="send-request-submit-btn" onclick="submitMentorshipRequest()">Send Request</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/mentors.js"></script>
+</body>
+</html>

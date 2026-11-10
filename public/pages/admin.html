@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Console – RuralConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon" style="background: var(--deep-navy);">🛡️</div>
+        <span>RuralConnect Admin</span>
+      </a>
+      <button class="menu-toggle" aria-label="Toggle Navigation">☰</button>
+      <ul class="nav-links" id="user-nav-links"></ul>
+      <div class="nav-actions" id="nav-actions"></div>
+    </div>
+  </nav>
+
+  <div class="portal-layout">
+    <!-- Sidebar -->
+    <aside class="portal-sidebar">
+      <div class="portal-user-badge">
+        <div class="user-avatar-placeholder" style="background: var(--deep-navy);">A</div>
+        <div style="overflow: hidden;">
+          <div class="user-meta-name">Platform Admin</div>
+          <div class="user-meta-role" style="color: var(--danger);">Superuser</div>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li><a href="#tab-stats" class="active" onclick="switchAdminTab('stats')">📊 Platform Analytics</a></li>
+        <li><a href="#tab-users" onclick="switchAdminTab('users')">👥 User Accounts</a></li>
+        <li><a href="#tab-content" onclick="switchAdminTab('content')">📁 Manage Content & CRUD</a></li>
+        <li><a href="#tab-audit" onclick="switchAdminTab('audit')">📜 System Activity Log</a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="logout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="portal-main">
+      <!-- 1. Stats View -->
+      <section id="admin-view-stats">
+        <div class="dashboard-header">
+          <div class="dashboard-title">
+            <h2>Platform Statistics & Analytics</h2>
+            <p>Live health and registration metrics across RuralConnect.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-students">0</div>
+              <div class="stat-label">Registered Students</div>
+            </div>
+            <div class="stat-icon blue">🎒</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-mentors">0</div>
+              <div class="stat-label">Verified Mentors</div>
+            </div>
+            <div class="stat-icon green">👨‍🏫</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-resources">0</div>
+              <div class="stat-label">Learning Resources</div>
+            </div>
+            <div class="stat-icon purple">📚</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-schemes">0</div>
+              <div class="stat-label">Scholarships & Schemes</div>
+            </div>
+            <div class="stat-icon amber">🏛️</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-jobs">0</div>
+              <div class="stat-label">Jobs & Internships</div>
+            </div>
+            <div class="stat-icon blue">💼</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-quizzes">0</div>
+              <div class="stat-label">Quizzes Created</div>
+            </div>
+            <div class="stat-icon purple">📝</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <div class="stat-value" id="admin-stat-attempts">0</div>
+              <div class="stat-label">Total Tests Taken</div>
+            </div>
+            <div class="stat-icon green">🎯</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Users Management View -->
+      <section id="admin-view-users" style="display: none;">
+        <div class="dashboard-header">
+          <div class="dashboard-title">
+            <h2>User Account Directory</h2>
+            <p>Monitor registrations, toggle active statuses, and enforce roles.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="admin-user-search" class="form-control" placeholder="Search user name or email..." style="width: 250px;">
+            <select id="admin-role-filter" class="form-control" style="width: 140px;">
+              <option value="">All Roles</option>
+              <option value="STUDENT">Students</option>
+              <option value="MENTOR">Mentors</option>
+              <option value="ADMIN">Admins</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-body">
+            <div id="admin-users-table-container">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Manage Content (Resources, Schemes, Jobs, Quizzes) -->
+      <section id="admin-view-content" style="display: none;">
+        <div class="dashboard-header">
+          <div class="dashboard-title">
+            <h2>Content Management (CRUD)</h2>
+            <p>Publish, update, or remove educational resources, schemes, and quizzes.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" onclick="openModal('create-resource-modal')">+ Add Resource</button>
+            <button class="btn btn-success btn-sm" onclick="openModal('create-scheme-modal')">+ Add Scheme</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('create-job-modal')">+ Add Job</button>
+            <button class="btn btn-outline btn-sm" onclick="openModal('create-quiz-modal')">+ Add Quiz</button>
+          </div>
+        </div>
+
+        <!-- Sub Tabs for Content -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--borders); padding-bottom: 0.5rem;">
+          <button class="btn btn-primary btn-sm" id="subtab-res-btn" onclick="switchContentSubTab('resources')">Resources</button>
+          <button class="btn btn-outline btn-sm" id="subtab-sch-btn" onclick="switchContentSubTab('schemes')">Scholarships</button>
+          <button class="btn btn-outline btn-sm" id="subtab-job-btn" onclick="switchContentSubTab('jobs')">Jobs</button>
+          <button class="btn btn-outline btn-sm" id="subtab-qiz-btn" onclick="switchContentSubTab('quizzes')">Quizzes</button>
+        </div>
+
+        <div id="admin-content-table-wrapper">
+          <div class="loading-spinner"></div>
+        </div>
+      </section>
+
+      <!-- 4. System Activity Audit View -->
+      <section id="admin-view-audit" style="display: none;">
+        <div class="dashboard-header">
+          <div class="dashboard-title">
+            <h2>Platform Activity Audit Log</h2>
+            <p>Chronological feed of logins, completions, submissions, and requests.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-body">
+            <ul class="activity-list" id="admin-activity-feed">
+              <li class="loading-spinner"></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Create Resource Modal -->
+  <div class="modal-overlay" id="create-resource-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Publish Platform Resource</h3>
+        <button class="modal-close" onclick="closeModal('create-resource-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-add-resource-form">
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input type="text" id="adm-res-title" class="form-control" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" id="adm-res-subject" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type *</label>
+              <select id="adm-res-type" class="form-control">
+                <option value="VIDEO">Video</option>
+                <option value="PDF">PDF</option>
+                <option value="ARTICLE">Article</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL *</label>
+            <input type="url" id="adm-res-url" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="adm-res-desc" class="form-control" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Create Resource</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Scheme Modal -->
+  <div class="modal-overlay" id="create-scheme-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Scheme / Scholarship</h3>
+        <button class="modal-close" onclick="closeModal('create-scheme-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-add-scheme-form">
+          <div class="form-group">
+            <label class="form-label">Scheme Title *</label>
+            <input type="text" id="adm-sch-title" class="form-control" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="adm-sch-type" class="form-control">
+                <option value="SCHOLARSHIP">Scholarship</option>
+                <option value="GOVERNMENT_SCHEME">Government Welfare Scheme</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Benefit Amount</label>
+              <input type="text" id="adm-sch-amount" class="form-control" placeholder="Rs. 15,000 / year">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eligibility Criteria *</label>
+            <input type="text" id="adm-sch-eligibility" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Benefits Description *</label>
+            <input type="text" id="adm-sch-benefits" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Application Portal URL</label>
+            <input type="url" id="adm-sch-url" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="adm-sch-desc" class="form-control" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success" style="width: 100%;">Publish Scheme</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Job Modal -->
+  <div class="modal-overlay" id="create-job-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Job / Internship</h3>
+        <button class="modal-close" onclick="closeModal('create-job-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-add-job-form">
+          <div class="form-group">
+            <label class="form-label">Job Title *</label>
+            <input type="text" id="adm-job-title" class="form-control" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Organization *</label>
+              <input type="text" id="adm-job-org" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Opportunity Type *</label>
+              <select id="adm-job-type" class="form-control">
+                <option value="INTERNSHIP">Internship</option>
+                <option value="FULL_TIME">Full Time</option>
+                <option value="PART_TIME">Part Time</option>
+              </select>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Location *</label>
+              <input type="text" id="adm-job-loc" class="form-control" placeholder="Remote / City" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stipend / Salary</label>
+              <input type="text" id="adm-job-salary" class="form-control" placeholder="Rs. 10,000/mo">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eligibility *</label>
+            <input type="text" id="adm-job-eligibility" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Application Link *</label>
+            <input type="url" id="adm-job-url" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea id="adm-job-desc" class="form-control" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Post Opportunity</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Quiz Modal -->
+  <div class="modal-overlay" id="create-quiz-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Subject Quiz</h3>
+        <button class="modal-close" onclick="closeModal('create-quiz-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-add-quiz-form">
+          <div class="form-group">
+            <label class="form-label">Quiz Title *</label>
+            <input type="text" id="adm-quiz-title" class="form-control" placeholder="Basic Physics Mechanics" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" id="adm-quiz-subject" class="form-control" placeholder="Physics" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration (Minutes)</label>
+              <input type="number" id="adm-quiz-duration" class="form-control" value="20" min="5">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="adm-quiz-desc" class="form-control" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Create Quiz Container</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
