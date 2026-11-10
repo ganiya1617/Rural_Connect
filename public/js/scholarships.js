@@ -1,4 +1,4 @@
-// RuralConnect - Scholarships & Government Schemes Controller
+// RuralConnect - Grants, Loans, Schemes & Scholarships Controller
 
 document.addEventListener('DOMContentLoaded', () => {
   setupSchemeListeners();
@@ -45,61 +45,72 @@ function renderSchemes(schemes) {
     grid.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1;">
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏛️</div>
-        <h3>No schemes match your criteria</h3>
-        <p>Try clearing your search terms or filters.</p>
+        <h3>No grants, loans, or schemes match your filter</h3>
+        <p>Try clearing your search terms or selecting 'All Categories'.</p>
       </div>
     `;
     return;
   }
 
-  grid.innerHTML = schemes.map(s => `
-    <div class="card opportunity-card">
-      <div>
-        <div class="resource-card-header">
-          <span class="badge ${s.type === 'SCHOLARSHIP' ? 'badge-blue' : 'badge-green'}">
-            ${s.type === 'SCHOLARSHIP' ? '🎓 Scholarship' : '🏛️ Welfare Scheme'}
-          </span>
-          ${s.amount ? `<span class="badge badge-warning">${escapeHtml(s.amount)}</span>` : ''}
-        </div>
+  const typeConfig = {
+    SCHOLARSHIP: { label: '🎓 Scholarship', badge: 'badge-blue' },
+    EDUCATION_LOAN: { label: '💳 Education Loan', badge: 'badge-purple' },
+    INCENTIVE: { label: '💡 Subsidy / Incentive', badge: 'badge-green' },
+    CONNECTIVITY_GRANT: { label: '📶 Digital Connectivity Grant', badge: 'badge-green' },
+    GOVERNMENT_SCHEME: { label: '🏛️ Welfare Scheme', badge: 'badge-warning' },
+  };
 
-        <h3 class="opportunity-title">${escapeHtml(s.title)}</h3>
-        <div style="font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 0.75rem;">
-          Issued by: <strong>${escapeHtml(s.issuedBy || 'Government of India')}</strong>
-        </div>
+  grid.innerHTML = schemes.map(s => {
+    const config = typeConfig[s.type] || { label: s.type, badge: 'badge-secondary' };
 
-        <p class="resource-desc" style="margin-bottom: 1rem;">
-          ${escapeHtml(s.description)}
-        </p>
-
-        <div style="margin-bottom: 1rem; background: #F8FAFC; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--borders);">
-          <div style="font-size: 0.82rem; font-weight: 600; color: var(--deep-navy); margin-bottom: 0.2rem;">ELIGIBILITY:</div>
-          <div style="font-size: 0.85rem; color: var(--secondary-text);">${escapeHtml(s.eligibility)}</div>
-
-          <div style="font-size: 0.82rem; font-weight: 600; color: var(--deep-navy); margin-top: 0.5rem; margin-bottom: 0.2rem;">BENEFITS:</div>
-          <div style="font-size: 0.85rem; color: var(--accent-green); font-weight: 500;">${escapeHtml(s.benefits)}</div>
-        </div>
-
-        ${s.documents && s.documents.length > 0 ? `
-          <div style="margin-bottom: 1rem;">
-            <div style="font-size: 0.78rem; font-weight: 600; color: var(--secondary-text); margin-bottom: 0.3rem;">DOCUMENTS NEEDED:</div>
-            <div class="tag-list">
-              ${s.documents.map(doc => `<span class="tag-pill">📄 ${escapeHtml(doc)}</span>`).join('')}
-            </div>
+    return `
+      <div class="card opportunity-card">
+        <div>
+          <div class="resource-card-header">
+            <span class="badge ${config.badge}">
+              ${config.label}
+            </span>
+            ${s.amount ? `<span class="badge badge-warning">${escapeHtml(s.amount)}</span>` : ''}
           </div>
-        ` : ''}
-      </div>
 
-      <div class="card-actions">
-        <a href="${s.applicationUrl || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="width: 100%;">
-          Apply on Official Portal ↗
-        </a>
+          <h3 class="opportunity-title" style="margin-top: 0.5rem;">${escapeHtml(s.title)}</h3>
+          <div style="font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 0.75rem;">
+            Issuing Body: <strong>${escapeHtml(s.issuedBy || 'Government Authority')}</strong>
+          </div>
+
+          <p class="resource-desc" style="margin-bottom: 1rem;">
+            ${escapeHtml(s.description)}
+          </p>
+
+          <div style="margin-bottom: 1rem; background: #F8FAFC; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--borders);">
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--deep-navy); margin-bottom: 0.2rem;">ELIGIBILITY:</div>
+            <div style="font-size: 0.85rem; color: var(--secondary-text);">${escapeHtml(s.eligibility)}</div>
+
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--deep-navy); margin-top: 0.5rem; margin-bottom: 0.2rem;">BENEFITS:</div>
+            <div style="font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">${escapeHtml(s.benefits)}</div>
+          </div>
+
+          ${s.documents && s.documents.length > 0 ? `
+            <div style="margin-bottom: 1rem;">
+              <div style="font-size: 0.78rem; font-weight: 600; color: var(--secondary-text); margin-bottom: 0.3rem;">DOCUMENTS NEEDED:</div>
+              <div class="tag-list">
+                ${s.documents.map(doc => `<span class="tag-pill">📄 ${escapeHtml(doc)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="card-actions">
+          <a href="${s.applicationUrl || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="width: 100%;">
+            Apply on Official Portal ↗
+          </a>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
-

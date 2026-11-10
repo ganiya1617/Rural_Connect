@@ -12,7 +12,7 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('🌱 Seeding RuralConnect database with real-world educational resources & opportunities...');
+  console.log('🌱 Seeding RuralConnect database with complete Smart Education features (Govt of Kerala alignment)...');
 
   const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 12;
 
@@ -28,7 +28,6 @@ async function main() {
       role: 'ADMIN',
     },
   });
-  console.log('✅ Admin user created: admin@ruralconnect.in / Admin@1234');
 
   // ── Mentors ─────────────────────────────────────────────────────────────────
   const mentorPass = await bcrypt.hash('Mentor@1234', BCRYPT_ROUNDS);
@@ -42,14 +41,14 @@ async function main() {
       role: 'MENTOR',
       mentorProfile: {
         create: {
-          designation: 'Senior Software Engineer',
+          designation: 'Senior Software Engineer & Tech Educator',
           organization: 'Tata Consultancy Services',
-          bio: 'Passionate about empowering rural students through technology education. 8+ years experience in software development and mentoring.',
-          expertise: ['JavaScript', 'Python', 'Web Development', 'Computer Basics'],
+          bio: 'Passionate about bridging the digital divide for rural youth through hands-on coding, computer basics, and communication mentoring.',
+          expertise: ['JavaScript', 'Python', 'Digital Skills', 'Career Mentorship'],
           subjects: ['Computer Science', 'Mathematics'],
           qualifications: ['B.Tech - IIT Delhi', 'M.Tech - BITS Pilani'],
           experience: 8,
-          location: 'Bangalore / Remote',
+          location: 'Kochi / Remote',
           isAvailable: true,
         },
       },
@@ -66,14 +65,14 @@ async function main() {
       role: 'MENTOR',
       mentorProfile: {
         create: {
-          designation: 'Science Teacher & Researcher',
-          organization: 'Delhi University',
-          bio: 'Dedicated educator with 12 years of teaching Physics and Chemistry to rural students across India.',
-          expertise: ['Physics', 'Chemistry', 'Competitive Exam Prep'],
+          designation: 'Research Scientist & Science Educator',
+          organization: 'National Institute of Technology (NIT)',
+          bio: 'Dedicated to fostering research and development mindset among rural students. Guides science projects, scientific method, and competitive exams.',
+          expertise: ['Physics', 'Research & Development', 'Scientific Method', 'Chemistry'],
           subjects: ['Physics', 'Chemistry', 'Science'],
-          qualifications: ['M.Sc Physics - Delhi University', 'PhD - IISc Bangalore'],
+          qualifications: ['M.Sc Physics', 'PhD - IISc Bangalore'],
           experience: 12,
-          location: 'Delhi',
+          location: 'Thiruvananthapuram / Remote',
           isAvailable: true,
         },
       },
@@ -90,20 +89,19 @@ async function main() {
       role: 'MENTOR',
       mentorProfile: {
         create: {
-          designation: 'Head of Mathematics Department',
-          organization: 'Kendriya Vidyalaya',
-          bio: 'Specialist in making algebra and calculus easy and intuitive for secondary students.',
-          expertise: ['Algebra', 'Calculus', 'Geometry', 'Vedic Maths'],
-          subjects: ['Mathematics'],
-          qualifications: ['M.Sc Mathematics - Pune University', 'B.Ed'],
+          designation: 'Communication Coach & Language Trainer',
+          organization: 'Kerala English Language Initiative',
+          bio: 'Specialist in elevating communication skills, public speaking confidence, and professional English for rural learners.',
+          expertise: ['Spoken English', 'Communication Skills', 'Interview Preparation', 'Soft Skills'],
+          subjects: ['English', 'Communication'],
+          qualifications: ['M.A. English - Kerala University', 'TESOL Certified'],
           experience: 10,
-          location: 'Pune / Remote',
+          location: 'Kozhikode / Remote',
           isAvailable: true,
         },
       },
     },
   });
-  console.log('✅ Mentors created');
 
   // ── Sample Student ──────────────────────────────────────────────────────────
   const studentPass = await bcrypt.hash('Student@1234', BCRYPT_ROUNDS);
@@ -117,46 +115,92 @@ async function main() {
       role: 'STUDENT',
       studentProfile: {
         create: {
-          village: 'Vadodara Rural',
-          district: 'Vadodara',
-          state: 'Gujarat',
+          village: 'Wayanad Rural',
+          district: 'Wayanad',
+          state: 'Kerala',
           class: '12th',
           school: 'Govt. Higher Secondary School',
-          board: 'GSEB',
-          interests: ['Science', 'Technology', 'Mathematics'],
-          bio: 'Aspiring engineer from rural Gujarat.',
+          board: 'Kerala State Board',
+          interests: ['Science', 'Technology', 'Communication', 'Mathematics'],
+          bio: 'First-generation rural student aspiring for higher technical education and scientific research.',
         },
       },
     },
   });
-  console.log('✅ Sample student created');
 
-  // ── Clear & Re-seed Resources with Working Links ───────────────────────────
+  // ── Educational & Material Resources ────────────────────────────────────────
   await prisma.bookmark.deleteMany({});
   await prisma.completedResource.deleteMany({});
   await prisma.resource.deleteMany({});
 
   const resources = [
+    // 1. Digital Literacy & Computer Basics (Bridge the digital divide)
+    {
+      title: 'Digital Literacy & Computer Basics Tutorial',
+      description: 'Comprehensive guide covering computer hardware, mouse and keyboard operations, file management, internet surfing, and cyber safety for first-time digital users.',
+      type: 'VIDEO',
+      subject: 'Computer Science',
+      topic: 'Digital Literacy',
+      url: 'https://www.youtube.com/watch?v=x3c1IH2NJEg',
+      difficulty: 'BEGINNER',
+      tags: ['digital-divide', 'computer-basics', 'literacy', 'internet-safety'],
+    },
+    // 2. Communication Skills & Spoken English (Elevate communication skills)
+    {
+      title: 'Spoken English & Communication Skills Masterclass',
+      description: 'Practical course focused on everyday conversation skills, sentence structure, pronunciation, and building confidence in public speaking for rural students.',
+      type: 'VIDEO',
+      subject: 'English',
+      topic: 'Communication Skills',
+      url: 'https://www.youtube.com/watch?v=juKd26QKNAw',
+      difficulty: 'BEGINNER',
+      tags: ['communication', 'spoken-english', 'confidence', 'soft-skills'],
+    },
+    // 3. Programming & High-Demand Technology
     {
       title: 'Python for Beginners – Full Free Course',
-      description: 'World-renowned beginner Python programming course by freeCodeCamp. Covers setup, variables, loops, data structures, and functions.',
+      description: 'World-renowned beginner Python programming course by freeCodeCamp. Teaches programming logic, loops, functions, and real-world projects.',
       type: 'VIDEO',
       subject: 'Computer Science',
       topic: 'Python Programming',
       url: 'https://www.youtube.com/watch?v=rfscVS0vtbw',
       difficulty: 'BEGINNER',
-      tags: ['python', 'programming', 'freecodecamp', 'coding'],
+      tags: ['python', 'programming', 'software', 'coding'],
     },
+    // 4. Research & Development / Interactive Lab Simulations
+    {
+      title: 'PhET Interactive STEM Science & Math Simulations',
+      description: 'Award-winning interactive simulation laboratory from the University of Colorado. Enables students to experiment with physics, chemistry, and biology virtual experiments free.',
+      type: 'ARTICLE',
+      subject: 'Science',
+      topic: 'Research & Lab Simulations',
+      url: 'https://phet.colorado.edu/',
+      difficulty: 'BEGINNER',
+      tags: ['research', 'simulations', 'stem', 'virtual-lab'],
+    },
+    // 5. Access to Material Resources (National Digital Library)
+    {
+      title: 'National Digital Library of India (NDLI) – 5+ Crore Free Books',
+      description: 'Ministry of Education flagship digital repository offering free full-text access to academic textbooks, research papers, audio books, and lecture notes across all languages.',
+      type: 'ARTICLE',
+      subject: 'General Education',
+      topic: 'Material Resources',
+      url: 'https://ndl.iitkgp.ac.in/',
+      difficulty: 'BEGINNER',
+      tags: ['material-resources', 'digital-library', 'free-books', 'ndli'],
+    },
+    // 6. NCERT Official Textbooks (Material Resources & Literacy)
     {
       title: 'NCERT Official Class 10 Science Textbook & Solutions',
-      description: 'Official National Council of Educational Research and Training (NCERT) textbook covering Physics, Chemistry, and Biology.',
+      description: 'Official National Council of Educational Research and Training (NCERT) textbook covering Physics, Chemistry, and Biology fundamentals.',
       type: 'PDF',
       subject: 'Science',
       topic: 'NCERT Class 10 Science',
       url: 'https://ncert.nic.in/textbook.php?jesc1=0-16',
       difficulty: 'BEGINNER',
-      tags: ['ncert', 'class10', 'science', 'cbse'],
+      tags: ['ncert', 'class10', 'science', 'literacy'],
     },
+    // 7. Advanced Mathematics
     {
       title: 'Khan Academy – Complete Calculus Essentials',
       description: 'In-depth interactive video series explaining limits, derivatives, rules of differentiation, and definite integrals intuitively.',
@@ -167,6 +211,7 @@ async function main() {
       difficulty: 'INTERMEDIATE',
       tags: ['calculus', 'maths', 'khan-academy', 'class12'],
     },
+    // 8. OpenStax College Physics Textbook
     {
       title: 'OpenStax Free College Physics Textbook',
       description: 'Peer-reviewed, open-licensed introductory college physics textbook covering mechanics, thermodynamics, waves, and optics.',
@@ -177,29 +222,10 @@ async function main() {
       difficulty: 'INTERMEDIATE',
       tags: ['physics', 'openstax', 'textbook', 'mechanics'],
     },
+    // 9. SWAYAM Higher Education Free Courses
     {
-      title: 'Computer Basics & Digital Literacy Tutorial',
-      description: 'Essential digital skills training covering keyboard shortcuts, mouse handling, operating system navigation, folders, and internet safety.',
-      type: 'VIDEO',
-      subject: 'Computer Science',
-      topic: 'Digital Literacy',
-      url: 'https://www.youtube.com/watch?v=x3c1IH2NJEg',
-      difficulty: 'BEGINNER',
-      tags: ['digital-literacy', 'computer', 'basics', 'skills'],
-    },
-    {
-      title: 'Chemistry Essentials – CrashCourse Chemistry',
-      description: 'Fast-paced, highly engaging 46-episode series covering the periodic table, atomic structure, stoichiometry, and chemical reactions.',
-      type: 'VIDEO',
-      subject: 'Chemistry',
-      topic: 'General Chemistry',
-      url: 'https://www.youtube.com/watch?v=FSyAehMdpyI',
-      difficulty: 'BEGINNER',
-      tags: ['chemistry', 'crashcourse', 'science', 'reactions'],
-    },
-    {
-      title: 'SWAYAM Government Free Online Courses',
-      description: 'Free digital learning platform initiated by the Ministry of Education, Government of India, featuring certified courses from IITs and IIMs.',
+      title: 'SWAYAM Government Free Online Courses (IIT & IIM Faculty)',
+      description: 'Government of India digital learning platform providing certified higher education modules in science, humanities, and engineering from premier institutions.',
       type: 'ARTICLE',
       subject: 'General Education',
       topic: 'Higher Education',
@@ -207,121 +233,108 @@ async function main() {
       difficulty: 'INTERMEDIATE',
       tags: ['swayam', 'government', 'iit', 'higher-education'],
     },
+    // 10. Research Lectures: NPTEL
     {
-      title: 'freeCodeCamp – Learn Responsive Web Design',
-      description: 'Interactive coding curriculum teaching HTML5, CSS3, Flexbox, CSS Grid, and responsive web development principles completely free.',
-      type: 'ARTICLE',
-      subject: 'Computer Science',
-      topic: 'Web Development',
-      url: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/',
-      difficulty: 'BEGINNER',
-      tags: ['web-development', 'html', 'css', 'coding'],
-    },
-    {
-      title: 'NCERT Class 12 Mathematics Textbook (Part 1 & 2)',
-      description: 'Official free textbook for Class 12 Senior Secondary Mathematics covering matrices, determinants, continuity, and vector algebra.',
-      type: 'PDF',
-      subject: 'Mathematics',
-      topic: 'Class 12 Maths',
-      url: 'https://ncert.nic.in/textbook.php?lemh1=0-6',
+      title: 'NPTEL Advanced Video Lectures & Research Preparation',
+      description: 'Joint initiative of the IITs and IISc offering high-quality video courses in STEM and engineering to foster research and development in underserved areas.',
+      type: 'VIDEO',
+      subject: 'Science',
+      topic: 'Research & Advanced STEM',
+      url: 'https://nptel.ac.in/',
       difficulty: 'ADVANCED',
-      tags: ['ncert', 'maths', 'class12', 'cbse'],
-    },
-    {
-      title: 'English Grammar & Vocabulary – British Council Learning',
-      description: 'Comprehensive guides, quizzes, and reference worksheets to master English grammar, tense structures, and spoken communication.',
-      type: 'ARTICLE',
-      subject: 'English',
-      topic: 'Grammar & Spoken English',
-      url: 'https://learnenglish.britishcouncil.org/grammar',
-      difficulty: 'BEGINNER',
-      tags: ['english', 'grammar', 'communication', 'british-council'],
+      tags: ['research', 'nptel', 'iit', 'stem', 'development'],
     },
   ];
 
   for (const resource of resources) {
     await prisma.resource.create({ data: resource });
   }
-  console.log(`✅ ${resources.length} verified learning resources created`);
+  console.log(`✅ ${resources.length} verified learning & material resources created`);
 
-  // ── Clear & Re-seed Schemes with Live Official Portals ──────────────────────
+  // ── Grants, Loans, Incentives & Connectivity Support ────────────────────────
   await prisma.scheme.deleteMany({});
 
   const schemes = [
+    // 1. Digital Connectivity Support (Govt of Kerala & National)
+    {
+      title: 'KFON (Kerala Fibre Optic Network) – Free Internet for Disadvantaged Families',
+      description: 'Pioneering Government of Kerala flagship initiative declaring internet access as a basic human right. Provides high-speed optical fibre connectivity completely free of cost to 20+ lakh economically disadvantaged rural families and 30,000+ government educational institutions.',
+      type: 'CONNECTIVITY_GRANT',
+      eligibility: 'BPL (Below Poverty Line) households, government school students, and rural residents across all Kerala districts.',
+      benefits: 'Free high-speed broadband connection + subsidised digital equipment.',
+      documents: ['Ration Card (BPL category)', 'Aadhaar Card', 'Address Proof'],
+      amount: '100% Free Internet Access',
+      applicationUrl: 'https://kfon.kerala.gov.in/',
+      issuedBy: 'Government of Kerala (IT Infrastructure & KSEB)',
+    },
+    // 2. Educational Loans & Subsidies
+    {
+      title: 'Vidya Lakshmi Portal – National Education Loan & Subsidy Portal',
+      description: 'First-of-its-kind digital portal developed by NSDL e-Gov under Department of Financial Services. Enables students from humble backgrounds to view, apply, and track education loans and interest subsidies from 40+ national banks under a single application.',
+      type: 'EDUCATION_LOAN',
+      eligibility: 'Indian students admitted to higher education or professional courses in recognized institutions in India or abroad.',
+      benefits: 'Educational loans up to Rs. 7.5 Lakh without collateral. Concessional interest rates and moratoria during course duration.',
+      documents: ['Admission Proof / Fee Structure', '10th/12th Marksheets', 'Income Certificate', 'PAN & Aadhaar Card'],
+      amount: 'Up to Rs. 7.5 – 15 Lakh',
+      applicationUrl: 'https://www.vidyalakshmi.co.in/',
+      issuedBy: 'Ministry of Finance & Ministry of Education, Govt of India',
+    },
+    // 3. Interest Subsidy on Education Loans (CSIS)
+    {
+      title: 'Central Sector Interest Subsidy Scheme (CSIS) on Education Loans',
+      description: 'Full interest subsidy during the moratorium period on education loans taken by students belonging to Economically Weaker Sections (EWS) pursuing approved professional courses.',
+      type: 'INCENTIVE',
+      eligibility: 'Students with parental annual income from all sources not exceeding Rs. 4.5 Lakh.',
+      benefits: '100% government reimbursement of the interest accrued during the course period + 1 year.',
+      documents: ['Income Certificate issued by authorized State authority', 'Loan sanction letter from scheduled bank'],
+      amount: 'Full Interest Waiver during Study',
+      applicationUrl: 'https://www.education.gov.in/technical-education-1',
+      issuedBy: 'Ministry of Education, Government of India',
+    },
+    // 4. National Scholarship Portal (NSP)
     {
       title: 'National Scholarship Portal (NSP) – Central & State Schemes',
-      description: 'One-stop electronic platform created by the Government of India providing access to over 50+ centrally sponsored, state, and UGC scholarships for pre-matric and post-matric rural students.',
+      description: 'Unified electronic portal providing access to pre-matric, post-matric, and merit-cum-means scholarships for rural and underserved students.',
       type: 'SCHOLARSHIP',
-      eligibility: 'School and college students with family annual income under Rs. 2.5 Lakh. Merit and means criteria vary by specific scheme.',
-      benefits: 'Full tuition fee reimbursement + annual maintenance stipend up to Rs. 20,000 to Rs. 50,000/year.',
-      documents: ['Aadhaar Card', 'Income Certificate', 'Previous Year Marksheet', 'Bank Passbook Details', 'Caste Certificate (if applicable)'],
+      eligibility: 'School and college students with family annual income under Rs. 2.5 Lakh. Merit and means criteria apply.',
+      benefits: 'Direct DBT payment into student bank account for tuition fees, books, and living maintenance.',
+      documents: ['Aadhaar Card', 'Income Certificate', 'Academic Marksheet', 'Bank Passbook'],
       amount: 'Rs. 12,000 – 50,000 / year',
       applicationUrl: 'https://scholarships.gov.in/',
-      issuedBy: 'Ministry of Electronics & IT / Ministry of Education, Govt of India',
+      issuedBy: 'Ministry of Education & MeitY, Govt of India',
     },
+    // 5. Research & Innovation Grant (MANAK)
     {
-      title: 'Buddy4Study – India’s Largest Scholarship Search Engine',
-      description: 'Comprehensive scholarship discovery platform connecting underprivileged students with verified private, corporate CSR, and foundation scholarships across India.',
-      type: 'SCHOLARSHIP',
-      eligibility: 'Students from Class 1 to Post-Graduation. Specialized filters for rural youth, girls, and STEM students.',
-      benefits: 'Financial assistance ranging from school fee subsidies to full college ride sponsorship.',
-      documents: ['Academic transcripts', 'Income proof', 'Family ration card', 'Identity proof'],
-      amount: 'Rs. 10,000 – 1,00,000 / year',
-      applicationUrl: 'https://www.buddy4study.com/',
-      issuedBy: 'Buddy4Study Foundation & Corporate CSR Partners',
+      title: 'INSPIRE Awards – MANAK (Million Minds Augmenting National Aspiration & Knowledge)',
+      description: 'Department of Science & Technology (DST) initiative to motivate students in rural and urban schools to foster a culture of creative thinking and innovative research in science.',
+      type: 'INCENTIVE',
+      eligibility: 'Students of Classes 6 to 10 aged 10-15 years submitting original scientific prototypes or ideas.',
+      benefits: 'Rs. 10,000 one-time grant for prototype development + mentorship by science researchers at state/national exhibitions.',
+      documents: ['School Principal recommendation', 'Scientific project synopsis', 'Aadhaar Card'],
+      amount: 'Rs. 10,000 Innovation Grant',
+      applicationUrl: 'https://www.inspireawards-dst.gov.in/',
+      issuedBy: 'Department of Science and Technology (DST), Govt of India',
     },
-    {
-      title: 'National Means-cum-Merit Scholarship (NMMS)',
-      description: 'Central Government scheme to award meritorious students of economically weaker sections to arrest their drop out at Class 8 and encourage them to continue studies at secondary stage.',
-      type: 'SCHOLARSHIP',
-      eligibility: 'Class 8 students studying in government/aided schools scoring 55%+ marks and parental income not exceeding Rs. 3.5 Lakh/year.',
-      benefits: 'Rs. 12,000 per annum (Rs. 1,000 per month) for 4 years from Class 9 to Class 12.',
-      documents: ['Class 7 Marksheet', 'Income Certificate', 'SC/ST Certificate (if applicable)', 'Bank Account details'],
-      amount: 'Rs. 12,000 per year',
-      applicationUrl: 'https://scholarships.gov.in/',
-      issuedBy: 'Department of School Education & Literacy, Ministry of Education',
-    },
+    // 6. Skill India & Free Vocational Training
     {
       title: 'Skill India Digital Hub & PMKVY Schemes',
-      description: 'Flagship national skill certification scheme enabling Indian youth to take up industry-relevant skill training that helps secure a better livelihood.',
+      description: 'Nationwide skill certification initiative providing free short-duration vocational training programs across digital, technical, and agricultural sectors.',
       type: 'GOVERNMENT_SCHEME',
-      eligibility: 'Any Indian citizen aged 15-45 looking for employment or skill enhancement. No formal prior educational degree required.',
-      benefits: '100% free technical skill training, Government of India certificate, monetary reward, and direct placement support.',
-      documents: ['Aadhaar Card', 'Bank Account details', 'Education certificates (if any)'],
-      amount: 'Free Training + Certification + Stipend',
+      eligibility: 'Indian citizen aged 15-45 looking for employment or skill enhancement. No formal degree required.',
+      benefits: 'Free skill training, government certification, monetary award, and direct industry placement assistance.',
+      documents: ['Aadhaar Card', 'Bank Account details', 'Age proof'],
+      amount: 'Free Certification + Placement',
       applicationUrl: 'https://www.skillindiadigital.gov.in/',
       issuedBy: 'Ministry of Skill Development & Entrepreneurship (MSDE)',
-    },
-    {
-      title: 'AICTE Pragati & Saksham Scholarship Scheme',
-      description: 'All India Council for Technical Education scheme aimed at providing assistance for advancement of girls pursuing technical education (Degree & Diploma).',
-      type: 'SCHOLARSHIP',
-      eligibility: 'Girl students admitted to 1st year of Degree/Diploma level course in an AICTE approved institution. Max 2 girls per family.',
-      benefits: 'Rs. 50,000 per annum for every year of study towards college fee, computer purchase, and books.',
-      documents: ['Admission letter to AICTE institute', '10th & 12th marksheets', 'Income certificate (< 8 Lakh/yr)', 'Aadhaar Card'],
-      amount: 'Rs. 50,000 per year',
-      applicationUrl: 'https://www.aicte-india.org/schemes/students-development-schemes',
-      issuedBy: 'All India Council for Technical Education (AICTE)',
-    },
-    {
-      title: 'Vidyasaarathi Education Scholarship Portal (NSDL)',
-      description: 'Transparent scholarship gateway managed by NSDL e-Governance for students from low-income families looking for higher education corporate scholarships.',
-      type: 'SCHOLARSHIP',
-      eligibility: 'Students pursuing ITI, Polytechnic, Undergraduate or Professional courses with family income below Rs. 5 Lakh.',
-      benefits: 'Direct Bank Transfer (DBT) tuition grants up to Rs. 40,000 per year.',
-      documents: ['Fee receipt', 'College bonafide certificate', 'Income proof', 'Bank passbook'],
-      amount: 'Rs. 20,000 – 40,000 / year',
-      applicationUrl: 'https://www.vidyasaarathi.co.in/',
-      issuedBy: 'NSDL e-Governance Infrastructure',
     },
   ];
 
   for (const scheme of schemes) {
     await prisma.scheme.create({ data: scheme });
   }
-  console.log(`✅ ${schemes.length} verified schemes/scholarships created`);
+  console.log(`✅ ${schemes.length} verified grants, loans, connectivity & schemes created`);
 
-  // ── Clear & Re-seed Jobs with Live Working Platforms ────────────────────────
+  // ── Employment & Internship Opportunities ──────────────────────────────────
   await prisma.job.deleteMany({});
 
   const jobs = [
@@ -398,7 +411,7 @@ async function main() {
   }
   console.log(`✅ ${jobs.length} verified jobs/internships created`);
 
-  // ── Seed Quizzes ───────────────────────────────────────────────────────────
+  // ── Quizzes ─────────────────────────────────────────────────────────────────
   await prisma.quizAttempt.deleteMany({});
   await prisma.question.deleteMany({});
   await prisma.quiz.deleteMany({});
@@ -504,7 +517,7 @@ async function main() {
   });
 
   console.log('✅ 2 quizzes with full questions created');
-  console.log('\n🎉 Database re-seeded with live, verified content successfully!');
+  console.log('\n🎉 Database re-seeded with comprehensive Smart Education & Kerala aligned data!');
 }
 
 main()

@@ -61,26 +61,26 @@ function setupNavbar() {
       if (userNavLinks) {
         if (user.role === 'STUDENT') {
           userNavLinks.innerHTML = `
-            <li><a href="/resources">Resources</a></li>
+            <li><a href="/resources">Study Materials</a></li>
             <li><a href="/mentors">Mentors</a></li>
             <li><a href="/quizzes">Quizzes</a></li>
-            <li><a href="/scholarships">Scholarships</a></li>
-            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/scholarships">Grants & Loans</a></li>
+            <li><a href="/jobs">Jobs & Internships</a></li>
             <li><a href="/progress">My Progress</a></li>
           `;
         } else if (user.role === 'MENTOR') {
           userNavLinks.innerHTML = `
             <li><a href="/mentor-dashboard">Mentor Portal</a></li>
-            <li><a href="/resources">Browse Resources</a></li>
-            <li><a href="/scholarships">Scholarships</a></li>
-            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/resources">Browse Materials</a></li>
+            <li><a href="/scholarships">Grants & Loans</a></li>
+            <li><a href="/jobs">Jobs & Opportunities</a></li>
           `;
         } else if (user.role === 'ADMIN') {
           userNavLinks.innerHTML = `
             <li><a href="/admin">Admin Console</a></li>
             <li><a href="/resources">Resources</a></li>
-            <li><a href="/scholarships">Scholarships</a></li>
-            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/scholarships">Grants & Loans</a></li>
+            <li><a href="/jobs">Jobs & Internships</a></li>
           `;
         }
       }
@@ -91,10 +91,10 @@ function setupNavbar() {
       `;
       if (userNavLinks) {
         userNavLinks.innerHTML = `
-          <li><a href="/resources">Resources</a></li>
+          <li><a href="/resources">Study Materials</a></li>
           <li><a href="/mentors">Mentors</a></li>
-          <li><a href="/scholarships">Scholarships</a></li>
-          <li><a href="/jobs">Jobs</a></li>
+          <li><a href="/scholarships">Grants & Loans</a></li>
+          <li><a href="/jobs">Jobs & Internships</a></li>
         `;
       }
     }
