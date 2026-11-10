@@ -93,28 +93,42 @@ function renderRecentAttempts(attempts) {
 async function loadRecommendedResources() {
   const container = document.getElementById('recommended-resources-list');
   try {
-    const res = await api.get('/resources', { limit: 4 });
+    const [res, compRes] = await Promise.all([
+      api.get('/resources', { limit: 4 }),
+      api.get('/resources/me/completed'),
+    ]);
+
+    const completedIds = new Set((compRes.data || []).map(c => c.resourceId));
+
     if (!res.data || res.data.length === 0) {
       container.innerHTML = '<div class="empty-state">No resources available yet.</div>';
       return;
     }
 
-    container.innerHTML = res.data.map(item => `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem; background: #F8FAFC; border-radius: var(--radius-sm); border: 1px solid var(--borders);">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="font-size: 1.3rem;">${item.type === 'VIDEO' ? '🎥' : item.type === 'PDF' ? '📄' : '📖'}</div>
-          <div>
-            <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="font-weight: 600; font-size: 0.95rem; color: var(--deep-navy);">
-              ${escapeHtml(item.title)}
-            </a>
-            <div style="font-size: 0.8rem; color: var(--secondary-text);">
-              ${escapeHtml(item.subject)} • <span class="badge badge-secondary">${item.difficulty}</span>
+    container.innerHTML = res.data.map(item => {
+      const isCompleted = completedIds.has(item.id);
+      return `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem; background: ${isCompleted ? '#F0FDF4' : '#F8FAFC'}; border-radius: var(--radius-sm); border: 1px solid ${isCompleted ? 'var(--accent-green)' : 'var(--borders)'};">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="font-size: 1.3rem;">${item.type === 'VIDEO' ? '🎥' : item.type === 'PDF' ? '📄' : '📖'}</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="font-weight: 600; font-size: 0.95rem; color: var(--deep-navy);">
+                  ${escapeHtml(item.title)}
+                </a>
+                ${isCompleted ? '<span class="badge badge-green" style="font-size: 0.7rem;">✓ Completed</span>' : ''}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--secondary-text);">
+                ${escapeHtml(item.subject)} • <span class="badge badge-secondary">${item.difficulty}</span>
+              </div>
             </div>
           </div>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn ${isCompleted ? 'btn-success' : 'btn-outline'} btn-sm">
+            ${isCompleted ? '✓ Review' : 'Study'}
+          </a>
         </div>
-        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Study</a>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   } catch (err) {
     container.innerHTML = '<div class="empty-state">Failed to load recommendations.</div>';
   }

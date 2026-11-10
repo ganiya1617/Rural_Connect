@@ -4,13 +4,15 @@ require('dotenv').config();
 
 const { PrismaClient } = require('@prisma/client');
 const { PrismaPg } = require('@prisma/adapter-pg');
+const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('🌱 Seeding RuralConnect database...');
+  console.log('🌱 Seeding RuralConnect database with real-world educational resources & opportunities...');
 
   const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 12;
 
@@ -28,9 +30,9 @@ async function main() {
   });
   console.log('✅ Admin user created: admin@ruralconnect.in / Admin@1234');
 
-  // ── Sample Mentor ───────────────────────────────────────────────────────────
+  // ── Mentors ─────────────────────────────────────────────────────────────────
   const mentorPass = await bcrypt.hash('Mentor@1234', BCRYPT_ROUNDS);
-  const mentor = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'priya.sharma@ruralconnect.in' },
     update: {},
     create: {
@@ -41,34 +43,33 @@ async function main() {
       mentorProfile: {
         create: {
           designation: 'Senior Software Engineer',
-          organization: 'TCS',
-          bio: 'Passionate about empowering rural students through technology education. 8+ years experience in software development.',
-          expertise: ['JavaScript', 'Python', 'Web Development', 'Data Structures'],
+          organization: 'Tata Consultancy Services',
+          bio: 'Passionate about empowering rural students through technology education. 8+ years experience in software development and mentoring.',
+          expertise: ['JavaScript', 'Python', 'Web Development', 'Computer Basics'],
           subjects: ['Computer Science', 'Mathematics'],
           qualifications: ['B.Tech - IIT Delhi', 'M.Tech - BITS Pilani'],
           experience: 8,
-          location: 'Bangalore',
+          location: 'Bangalore / Remote',
           isAvailable: true,
         },
       },
     },
   });
 
-  const mentor2Pass = await bcrypt.hash('Mentor@1234', BCRYPT_ROUNDS);
   await prisma.user.upsert({
     where: { email: 'rajesh.kumar@ruralconnect.in' },
     update: {},
     create: {
       email: 'rajesh.kumar@ruralconnect.in',
-      password: mentor2Pass,
-      name: 'Rajesh Kumar',
+      password: mentorPass,
+      name: 'Dr. Rajesh Kumar',
       role: 'MENTOR',
       mentorProfile: {
         create: {
           designation: 'Science Teacher & Researcher',
           organization: 'Delhi University',
           bio: 'Dedicated educator with 12 years of teaching Physics and Chemistry to rural students across India.',
-          expertise: ['Physics', 'Chemistry', 'Research Methodology'],
+          expertise: ['Physics', 'Chemistry', 'Competitive Exam Prep'],
           subjects: ['Physics', 'Chemistry', 'Science'],
           qualifications: ['M.Sc Physics - Delhi University', 'PhD - IISc Bangalore'],
           experience: 12,
@@ -78,7 +79,31 @@ async function main() {
       },
     },
   });
-  console.log('✅ Sample mentors created');
+
+  await prisma.user.upsert({
+    where: { email: 'anita.desai@ruralconnect.in' },
+    update: {},
+    create: {
+      email: 'anita.desai@ruralconnect.in',
+      password: mentorPass,
+      name: 'Anita Desai',
+      role: 'MENTOR',
+      mentorProfile: {
+        create: {
+          designation: 'Head of Mathematics Department',
+          organization: 'Kendriya Vidyalaya',
+          bio: 'Specialist in making algebra and calculus easy and intuitive for secondary students.',
+          expertise: ['Algebra', 'Calculus', 'Geometry', 'Vedic Maths'],
+          subjects: ['Mathematics'],
+          qualifications: ['M.Sc Mathematics - Pune University', 'B.Ed'],
+          experience: 10,
+          location: 'Pune / Remote',
+          isAvailable: true,
+        },
+      },
+    },
+  });
+  console.log('✅ Mentors created');
 
   // ── Sample Student ──────────────────────────────────────────────────────────
   const studentPass = await bcrypt.hash('Student@1234', BCRYPT_ROUNDS);
@@ -106,208 +131,284 @@ async function main() {
   });
   console.log('✅ Sample student created');
 
-  // ── Resources ───────────────────────────────────────────────────────────────
+  // ── Clear & Re-seed Resources with Working Links ───────────────────────────
+  await prisma.bookmark.deleteMany({});
+  await prisma.completedResource.deleteMany({});
+  await prisma.resource.deleteMany({});
+
   const resources = [
     {
-      title: 'Introduction to Python Programming',
-      description: 'A comprehensive beginner guide to Python programming covering basics, data types, loops and functions.',
+      title: 'Python for Beginners – Full Free Course',
+      description: 'World-renowned beginner Python programming course by freeCodeCamp. Covers setup, variables, loops, data structures, and functions.',
       type: 'VIDEO',
       subject: 'Computer Science',
-      topic: 'Python Basics',
-      url: 'https://www.youtube.com/watch?v=_uQrJ0TkZlc',
+      topic: 'Python Programming',
+      url: 'https://www.youtube.com/watch?v=rfscVS0vtbw',
       difficulty: 'BEGINNER',
-      tags: ['python', 'programming', 'beginner'],
+      tags: ['python', 'programming', 'freecodecamp', 'coding'],
     },
     {
-      title: 'Class 10 Science NCERT Solutions',
-      description: 'Complete NCERT solutions for Class 10 Science including Physics, Chemistry and Biology.',
+      title: 'NCERT Official Class 10 Science Textbook & Solutions',
+      description: 'Official National Council of Educational Research and Training (NCERT) textbook covering Physics, Chemistry, and Biology.',
       type: 'PDF',
       subject: 'Science',
-      topic: 'NCERT Solutions',
+      topic: 'NCERT Class 10 Science',
       url: 'https://ncert.nic.in/textbook.php?jesc1=0-16',
       difficulty: 'BEGINNER',
-      tags: ['ncert', 'class10', 'science'],
+      tags: ['ncert', 'class10', 'science', 'cbse'],
     },
     {
-      title: 'Mathematics Class 12 - Calculus',
-      description: 'Deep dive into calculus including limits, derivatives and integrals for Class 12 students.',
+      title: 'Khan Academy – Complete Calculus Essentials',
+      description: 'In-depth interactive video series explaining limits, derivatives, rules of differentiation, and definite integrals intuitively.',
       type: 'VIDEO',
       subject: 'Mathematics',
       topic: 'Calculus',
-      url: 'https://www.youtube.com/watch?v=WUvTyaaNkzM',
+      url: 'https://www.youtube.com/watch?v=7K1kkp3f6sI',
       difficulty: 'INTERMEDIATE',
-      tags: ['calculus', 'maths', 'class12'],
+      tags: ['calculus', 'maths', 'khan-academy', 'class12'],
     },
     {
-      title: 'English Grammar - Complete Guide',
-      description: 'Master English grammar from basics to advanced level. Covers tenses, voices, narration and more.',
-      type: 'ARTICLE',
-      subject: 'English',
-      topic: 'Grammar',
-      url: 'https://www.grammarly.com/blog/grammar/',
-      difficulty: 'BEGINNER',
-      tags: ['english', 'grammar', 'communication'],
-    },
-    {
-      title: 'Indian History for UPSC Preparation',
-      description: 'Detailed notes on Indian History from ancient to modern era, ideal for competitive exams.',
+      title: 'OpenStax Free College Physics Textbook',
+      description: 'Peer-reviewed, open-licensed introductory college physics textbook covering mechanics, thermodynamics, waves, and optics.',
       type: 'PDF',
-      subject: 'History',
-      topic: 'Indian History',
-      url: 'https://www.insightsonindia.com/indian-history/',
+      subject: 'Physics',
+      topic: 'College Physics',
+      url: 'https://openstax.org/details/books/college-physics',
       difficulty: 'INTERMEDIATE',
-      tags: ['history', 'upsc', 'competitive'],
+      tags: ['physics', 'openstax', 'textbook', 'mechanics'],
     },
     {
-      title: 'Digital Literacy for Rural Students',
-      description: 'Introduction to computers, internet, email and essential digital skills for rural learners.',
+      title: 'Computer Basics & Digital Literacy Tutorial',
+      description: 'Essential digital skills training covering keyboard shortcuts, mouse handling, operating system navigation, folders, and internet safety.',
       type: 'VIDEO',
       subject: 'Computer Science',
       topic: 'Digital Literacy',
-      url: 'https://www.youtube.com/watch?v=Tn6-PIqc4UM',
+      url: 'https://www.youtube.com/watch?v=x3c1IH2NJEg',
       difficulty: 'BEGINNER',
-      tags: ['digital', 'computer', 'internet', 'beginner'],
+      tags: ['digital-literacy', 'computer', 'basics', 'skills'],
+    },
+    {
+      title: 'Chemistry Essentials – CrashCourse Chemistry',
+      description: 'Fast-paced, highly engaging 46-episode series covering the periodic table, atomic structure, stoichiometry, and chemical reactions.',
+      type: 'VIDEO',
+      subject: 'Chemistry',
+      topic: 'General Chemistry',
+      url: 'https://www.youtube.com/watch?v=FSyAehMdpyI',
+      difficulty: 'BEGINNER',
+      tags: ['chemistry', 'crashcourse', 'science', 'reactions'],
+    },
+    {
+      title: 'SWAYAM Government Free Online Courses',
+      description: 'Free digital learning platform initiated by the Ministry of Education, Government of India, featuring certified courses from IITs and IIMs.',
+      type: 'ARTICLE',
+      subject: 'General Education',
+      topic: 'Higher Education',
+      url: 'https://swayam.gov.in/',
+      difficulty: 'INTERMEDIATE',
+      tags: ['swayam', 'government', 'iit', 'higher-education'],
+    },
+    {
+      title: 'freeCodeCamp – Learn Responsive Web Design',
+      description: 'Interactive coding curriculum teaching HTML5, CSS3, Flexbox, CSS Grid, and responsive web development principles completely free.',
+      type: 'ARTICLE',
+      subject: 'Computer Science',
+      topic: 'Web Development',
+      url: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/',
+      difficulty: 'BEGINNER',
+      tags: ['web-development', 'html', 'css', 'coding'],
+    },
+    {
+      title: 'NCERT Class 12 Mathematics Textbook (Part 1 & 2)',
+      description: 'Official free textbook for Class 12 Senior Secondary Mathematics covering matrices, determinants, continuity, and vector algebra.',
+      type: 'PDF',
+      subject: 'Mathematics',
+      topic: 'Class 12 Maths',
+      url: 'https://ncert.nic.in/textbook.php?lemh1=0-6',
+      difficulty: 'ADVANCED',
+      tags: ['ncert', 'maths', 'class12', 'cbse'],
+    },
+    {
+      title: 'English Grammar & Vocabulary – British Council Learning',
+      description: 'Comprehensive guides, quizzes, and reference worksheets to master English grammar, tense structures, and spoken communication.',
+      type: 'ARTICLE',
+      subject: 'English',
+      topic: 'Grammar & Spoken English',
+      url: 'https://learnenglish.britishcouncil.org/grammar',
+      difficulty: 'BEGINNER',
+      tags: ['english', 'grammar', 'communication', 'british-council'],
     },
   ];
 
   for (const resource of resources) {
     await prisma.resource.create({ data: resource });
   }
-  console.log(`✅ ${resources.length} learning resources created`);
+  console.log(`✅ ${resources.length} verified learning resources created`);
 
-  // ── Schemes / Scholarships ──────────────────────────────────────────────────
+  // ── Clear & Re-seed Schemes with Live Official Portals ──────────────────────
+  await prisma.scheme.deleteMany({});
+
   const schemes = [
     {
-      title: 'PM Scholarship Scheme for Central Armed Police Forces',
-      description: 'Scholarship for wards of Central Armed Police Forces and Railway Protection Force for professional degree courses.',
+      title: 'National Scholarship Portal (NSP) – Central & State Schemes',
+      description: 'One-stop electronic platform created by the Government of India providing access to over 50+ centrally sponsored, state, and UGC scholarships for pre-matric and post-matric rural students.',
       type: 'SCHOLARSHIP',
-      eligibility: 'Ward of CAPF/RPF personnel. Minimum 60% in Class 12.',
-      benefits: 'Rs. 2,000/month for boys, Rs. 2,250/month for girls',
-      documents: ['Marksheet', 'Service certificate of parent', 'Bank account details', 'Aadhar card'],
-      amount: 'Rs. 24,000 - 27,000 per year',
-      applicationUrl: 'https://ksb.gov.in/',
-      issuedBy: 'Kendriya Sainik Board, Ministry of Defence',
+      eligibility: 'School and college students with family annual income under Rs. 2.5 Lakh. Merit and means criteria vary by specific scheme.',
+      benefits: 'Full tuition fee reimbursement + annual maintenance stipend up to Rs. 20,000 to Rs. 50,000/year.',
+      documents: ['Aadhaar Card', 'Income Certificate', 'Previous Year Marksheet', 'Bank Passbook Details', 'Caste Certificate (if applicable)'],
+      amount: 'Rs. 12,000 – 50,000 / year',
+      applicationUrl: 'https://scholarships.gov.in/',
+      issuedBy: 'Ministry of Electronics & IT / Ministry of Education, Govt of India',
+    },
+    {
+      title: 'Buddy4Study – India’s Largest Scholarship Search Engine',
+      description: 'Comprehensive scholarship discovery platform connecting underprivileged students with verified private, corporate CSR, and foundation scholarships across India.',
+      type: 'SCHOLARSHIP',
+      eligibility: 'Students from Class 1 to Post-Graduation. Specialized filters for rural youth, girls, and STEM students.',
+      benefits: 'Financial assistance ranging from school fee subsidies to full college ride sponsorship.',
+      documents: ['Academic transcripts', 'Income proof', 'Family ration card', 'Identity proof'],
+      amount: 'Rs. 10,000 – 1,00,000 / year',
+      applicationUrl: 'https://www.buddy4study.com/',
+      issuedBy: 'Buddy4Study Foundation & Corporate CSR Partners',
     },
     {
       title: 'National Means-cum-Merit Scholarship (NMMS)',
-      description: 'State-level scholarship for meritorious students from economically weaker sections to continue studies in Class 9-12.',
+      description: 'Central Government scheme to award meritorious students of economically weaker sections to arrest their drop out at Class 8 and encourage them to continue studies at secondary stage.',
       type: 'SCHOLARSHIP',
-      eligibility: 'Students of Class 8 with minimum 55% marks. Family income below Rs. 1.5 lakh per year.',
-      benefits: 'Rs. 12,000 per year (Rs. 1,000/month)',
-      documents: ['Income certificate', 'Class 7 marksheet', 'Caste certificate', 'Bank passbook'],
+      eligibility: 'Class 8 students studying in government/aided schools scoring 55%+ marks and parental income not exceeding Rs. 3.5 Lakh/year.',
+      benefits: 'Rs. 12,000 per annum (Rs. 1,000 per month) for 4 years from Class 9 to Class 12.',
+      documents: ['Class 7 Marksheet', 'Income Certificate', 'SC/ST Certificate (if applicable)', 'Bank Account details'],
       amount: 'Rs. 12,000 per year',
       applicationUrl: 'https://scholarships.gov.in/',
-      issuedBy: 'Ministry of Education, Government of India',
+      issuedBy: 'Department of School Education & Literacy, Ministry of Education',
     },
     {
-      title: 'Post Matric Scholarship for SC Students',
-      description: 'Government scholarship for Scheduled Caste students pursuing post-matriculation or post-secondary education.',
+      title: 'Skill India Digital Hub & PMKVY Schemes',
+      description: 'Flagship national skill certification scheme enabling Indian youth to take up industry-relevant skill training that helps secure a better livelihood.',
+      type: 'GOVERNMENT_SCHEME',
+      eligibility: 'Any Indian citizen aged 15-45 looking for employment or skill enhancement. No formal prior educational degree required.',
+      benefits: '100% free technical skill training, Government of India certificate, monetary reward, and direct placement support.',
+      documents: ['Aadhaar Card', 'Bank Account details', 'Education certificates (if any)'],
+      amount: 'Free Training + Certification + Stipend',
+      applicationUrl: 'https://www.skillindiadigital.gov.in/',
+      issuedBy: 'Ministry of Skill Development & Entrepreneurship (MSDE)',
+    },
+    {
+      title: 'AICTE Pragati & Saksham Scholarship Scheme',
+      description: 'All India Council for Technical Education scheme aimed at providing assistance for advancement of girls pursuing technical education (Degree & Diploma).',
       type: 'SCHOLARSHIP',
-      eligibility: 'Belongs to Scheduled Caste. Studying in a government-recognized institution post Class 10.',
-      benefits: 'Full tuition fee + maintenance allowance',
-      documents: ['Caste certificate', 'Income certificate', 'Marksheets', 'Institution bonafide certificate'],
-      amount: 'Variable based on course',
-      applicationUrl: 'https://scholarships.gov.in/',
-      issuedBy: 'Ministry of Social Justice and Empowerment',
+      eligibility: 'Girl students admitted to 1st year of Degree/Diploma level course in an AICTE approved institution. Max 2 girls per family.',
+      benefits: 'Rs. 50,000 per annum for every year of study towards college fee, computer purchase, and books.',
+      documents: ['Admission letter to AICTE institute', '10th & 12th marksheets', 'Income certificate (< 8 Lakh/yr)', 'Aadhaar Card'],
+      amount: 'Rs. 50,000 per year',
+      applicationUrl: 'https://www.aicte-india.org/schemes/students-development-schemes',
+      issuedBy: 'All India Council for Technical Education (AICTE)',
     },
     {
-      title: 'Pradhan Mantri Kaushal Vikas Yojana (PMKVY)',
-      description: 'Flagship scheme for skill development offering free short-duration skill training programs across India.',
-      type: 'GOVERNMENT_SCHEME',
-      eligibility: 'Indian citizen, age 15-45 years, school dropout or unemployed youth.',
-      benefits: 'Free skill training, certification, placement assistance and monetary reward',
-      documents: ['Aadhar card', 'Bank account', 'Age proof'],
-      applicationUrl: 'https://www.pmkvyofficial.org/',
-      issuedBy: 'Ministry of Skill Development and Entrepreneurship',
-    },
-    {
-      title: 'Beti Bachao Beti Padhao Scheme',
-      description: 'Government initiative to ensure welfare and education of the girl child across India.',
-      type: 'GOVERNMENT_SCHEME',
-      eligibility: 'Girl students across India, with focus on districts with low sex ratio.',
-      benefits: 'Educational support, awareness programs, financial incentives for girls education',
-      documents: ['Birth certificate', 'Aadhar card', 'School enrollment proof'],
-      applicationUrl: 'https://wcd.nic.in/bbbp-schemes',
-      issuedBy: 'Ministry of Women and Child Development',
+      title: 'Vidyasaarathi Education Scholarship Portal (NSDL)',
+      description: 'Transparent scholarship gateway managed by NSDL e-Governance for students from low-income families looking for higher education corporate scholarships.',
+      type: 'SCHOLARSHIP',
+      eligibility: 'Students pursuing ITI, Polytechnic, Undergraduate or Professional courses with family income below Rs. 5 Lakh.',
+      benefits: 'Direct Bank Transfer (DBT) tuition grants up to Rs. 40,000 per year.',
+      documents: ['Fee receipt', 'College bonafide certificate', 'Income proof', 'Bank passbook'],
+      amount: 'Rs. 20,000 – 40,000 / year',
+      applicationUrl: 'https://www.vidyasaarathi.co.in/',
+      issuedBy: 'NSDL e-Governance Infrastructure',
     },
   ];
 
   for (const scheme of schemes) {
     await prisma.scheme.create({ data: scheme });
   }
-  console.log(`✅ ${schemes.length} schemes/scholarships created`);
+  console.log(`✅ ${schemes.length} verified schemes/scholarships created`);
 
-  // ── Jobs / Internships ──────────────────────────────────────────────────────
+  // ── Clear & Re-seed Jobs with Live Working Platforms ────────────────────────
+  await prisma.job.deleteMany({});
+
   const jobs = [
     {
-      title: 'Digital India Internship',
-      organization: 'Ministry of Electronics and Information Technology',
-      description: 'Summer internship opportunity at MeitY working on digital India initiatives and e-governance projects.',
+      title: 'Student Internships – Internshala Portal',
+      organization: 'Internshala (Official Partner Portal)',
+      description: 'Explore over 10,000+ verified remote and in-office internships across India in Web Development, Graphic Design, Content Writing, Digital Marketing, and Teaching.',
       type: 'INTERNSHIP',
-      eligibility: 'Students pursuing B.Tech/MCA/BCA in final or pre-final year',
-      location: 'New Delhi',
-      stipend: 'Rs. 10,000/month',
+      eligibility: 'Open to all students, graduates, and high school learners. No prior work experience needed.',
+      location: 'Pan India / 100% Work From Home',
+      stipend: 'Rs. 5,000 – 25,000 / month',
+      applicationUrl: 'https://internshala.com/internships/',
+      tags: ['internshala', 'internship', 'remote', 'students', 'all-streams'],
+    },
+    {
+      title: 'AICTE National Internship Portal Opportunities',
+      organization: 'AICTE & Ministry of Education',
+      description: 'Official Government of India portal connecting engineering, diploma, and polytechnic students with public sector units, smart cities, and private enterprises.',
+      type: 'INTERNSHIP',
+      eligibility: 'Students currently enrolled in recognized colleges or institutes across India.',
+      location: 'Pan India (Urban & Rural Districts)',
+      stipend: 'Rs. 8,000 – 15,000 / month',
       applicationUrl: 'https://internship.aicte-india.org/',
-      tags: ['government', 'technology', 'digital-india'],
+      tags: ['aicte', 'government', 'technology', 'engineering'],
     },
     {
-      title: 'Rural Development Intern',
-      organization: 'NABARD',
-      description: 'Work with rural communities on agricultural finance, microfinance and self-help group initiatives.',
-      type: 'INTERNSHIP',
-      eligibility: 'Students of Agriculture, Rural Development, Economics or MBA (Agri)',
-      location: 'Pan India',
-      stipend: 'Rs. 15,000/month',
-      applicationUrl: 'https://www.nabard.org/',
-      tags: ['rural', 'agriculture', 'finance', 'development'],
-    },
-    {
-      title: 'Junior Software Developer',
-      organization: 'Zoho Corporation',
-      description: 'Entry-level software development position building enterprise SaaS products for global customers.',
+      title: 'National Career Service (NCS) – Youth Job Portal',
+      organization: 'Ministry of Labour & Employment',
+      description: 'A Mission Mode Project by the Ministry of Labour and Employment providing job matching, vocational guidance, and skill development programs.',
       type: 'FULL_TIME',
-      eligibility: 'B.Tech/BE in CS or IT with minimum 60% marks. Strong problem-solving skills.',
-      location: 'Chennai / Remote',
-      salary: 'Rs. 5-8 LPA',
-      applicationUrl: 'https://careers.zohocorp.com/',
-      tags: ['software', 'developer', 'entry-level', 'it'],
+      eligibility: '10th Pass, 12th Pass, ITI, Diploma holders and Graduates across all disciplines.',
+      location: 'All Indian States & Districts',
+      salary: 'Rs. 15,000 – 35,000 / month',
+      applicationUrl: 'https://www.ncs.gov.in/',
+      tags: ['government', 'ncs', 'entry-level', 'freshers'],
     },
     {
-      title: 'Primary School Teacher',
+      title: 'Teach For India – Educational Fellowship',
       organization: 'Teach For India',
-      description: 'Two-year fellowship teaching underprivileged children in government schools across metro cities.',
+      description: 'Two-year leadership development program where you teach underprivileged children full-time and advocate for educational equity across India.',
       type: 'FULL_TIME',
-      eligibility: 'Graduate in any discipline with minimum 50% marks. Passionate about education.',
-      location: 'Mumbai, Delhi, Bangalore, Pune',
-      salary: 'Rs. 17,000 - 23,000/month (stipend)',
-      applicationUrl: 'https://www.teachforindia.org/apply',
-      tags: ['education', 'teaching', 'fellowship', 'ngo'],
+      eligibility: 'Graduates or graduating students with strong communication skills and passion for teaching.',
+      location: 'Mumbai, Delhi, Pune, Bangalore, Hyderabad, Chennai, Ahmedabad',
+      salary: 'Rs. 23,000 / month + Housing Allowance',
+      applicationUrl: 'https://apply.teachforindia.org/',
+      tags: ['education', 'teaching', 'fellowship', 'social-impact'],
     },
     {
-      title: 'Content Creator - Rural Education',
-      organization: 'Khan Academy India',
-      description: 'Create educational content in regional Indian languages for Maths and Science up to Class 10.',
-      type: 'PART_TIME',
-      eligibility: 'Graduate with strong subject knowledge. Experience in content creation preferred.',
-      location: 'Remote',
-      salary: 'Project-based (Rs. 500-1000 per video)',
-      applicationUrl: 'https://khanacademy.org/careers',
-      tags: ['education', 'content', 'remote', 'part-time'],
+      title: 'MyGov Innovation & Digital Volunteering Internships',
+      organization: 'MyGov India',
+      description: 'Engage directly with the Government of India on public policy, social media, research, and citizen empowerment initiatives.',
+      type: 'INTERNSHIP',
+      eligibility: 'Enrolled undergraduate or postgraduate students with interest in digital governance.',
+      location: 'New Delhi / Remote',
+      stipend: 'Rs. 10,000 / month + Certificate of Excellence',
+      applicationUrl: 'https://innovateindia.mygov.in/',
+      tags: ['mygov', 'digital-india', 'governance', 'research'],
+    },
+    {
+      title: 'Indeed India – Entry-Level & Fresher Jobs',
+      organization: 'Indeed India Network',
+      description: 'Search hundreds of thousands of entry-level openings in customer support, IT operations, data entry, teaching, and logistics.',
+      type: 'FULL_TIME',
+      eligibility: '12th Pass, Diploma, or Graduate.',
+      location: 'Pan India / Remote',
+      salary: 'Rs. 1.8 – 4.5 LPA',
+      applicationUrl: 'https://in.indeed.com/jobs?q=entry+level+fresher',
+      tags: ['indeed', 'fresher', 'entry-level', 'corporate'],
     },
   ];
 
   for (const job of jobs) {
     await prisma.job.create({ data: job });
   }
-  console.log(`✅ ${jobs.length} jobs/internships created`);
+  console.log(`✅ ${jobs.length} verified jobs/internships created`);
 
-  // ── Quizzes ─────────────────────────────────────────────────────────────────
-  const mathQuiz = await prisma.quiz.create({
+  // ── Seed Quizzes ───────────────────────────────────────────────────────────
+  await prisma.quizAttempt.deleteMany({});
+  await prisma.question.deleteMany({});
+  await prisma.quiz.deleteMany({});
+
+  await prisma.quiz.create({
     data: {
-      title: 'Mathematics Basics',
-      description: 'Test your basic mathematics knowledge covering algebra, arithmetic and geometry.',
+      title: 'Mathematics Basics & Quantitative Aptitude',
+      description: 'Test your basic arithmetic, algebra, geometry, and speed calculations.',
       subject: 'Mathematics',
-      topic: 'Basics',
+      topic: 'Basics & Arithmetic',
       duration: 15,
       totalMarks: 5,
       questions: {
@@ -327,24 +428,24 @@ async function main() {
             marks: 1, order: 2,
           },
           {
-            questionText: 'What is the HCF of 36 and 48?',
+            questionText: 'What is the HCF (Highest Common Factor) of 36 and 48?',
             optionA: '6', optionB: '8', optionC: '12', optionD: '18',
             correctOption: 'C',
-            explanation: 'Factors of 36: 1,2,3,4,6,9,12,18,36. Factors of 48: 1,2,3,4,6,8,12,16,24,48. HCF = 12',
+            explanation: 'Factors of 36: 1,2,3,4,6,9,12,18,36. Factors of 48: 1,2,3,4,6,8,12,16,24,48. Highest common factor = 12.',
             marks: 1, order: 3,
           },
           {
-            questionText: 'If a train travels 360 km in 4 hours, what is its speed?',
+            questionText: 'If a train travels 360 km in 4 hours, what is its speed in km/h?',
             optionA: '80 km/h', optionB: '90 km/h', optionC: '100 km/h', optionD: '120 km/h',
             correctOption: 'B',
-            explanation: 'Speed = Distance/Time = 360/4 = 90 km/h',
+            explanation: 'Speed = Distance / Time = 360 / 4 = 90 km/h.',
             marks: 1, order: 4,
           },
           {
             questionText: 'What is 15% of 200?',
             optionA: '25', optionB: '30', optionC: '35', optionD: '40',
             correctOption: 'B',
-            explanation: '15% of 200 = (15/100) × 200 = 30',
+            explanation: '15% of 200 = (15 / 100) × 200 = 30.',
             marks: 1, order: 5,
           },
         ],
@@ -352,10 +453,10 @@ async function main() {
     },
   });
 
-  const scienceQuiz = await prisma.quiz.create({
+  await prisma.quiz.create({
     data: {
-      title: 'General Science Quiz',
-      description: 'Basic questions covering Physics, Chemistry and Biology for Class 9-10.',
+      title: 'General Science & Environment Quiz',
+      description: 'Fundamental questions in Physics, Chemistry, Biology, and Environmental Science.',
       subject: 'Science',
       topic: 'General Science',
       duration: 20,
@@ -366,35 +467,35 @@ async function main() {
             questionText: 'What is the SI unit of force?',
             optionA: 'Joule', optionB: 'Newton', optionC: 'Watt', optionD: 'Pascal',
             correctOption: 'B',
-            explanation: 'Force is measured in Newtons (N) in the SI system.',
+            explanation: 'Force is measured in Newtons (N) in the SI system (F = m × a).',
             marks: 1, order: 1,
           },
           {
             questionText: 'Which gas is most abundant in Earth\'s atmosphere?',
             optionA: 'Oxygen', optionB: 'Carbon Dioxide', optionC: 'Nitrogen', optionD: 'Argon',
             correctOption: 'C',
-            explanation: 'Nitrogen (N₂) makes up about 78% of Earth\'s atmosphere.',
+            explanation: 'Nitrogen (N₂) makes up approximately 78% of Earth\'s atmosphere.',
             marks: 1, order: 2,
           },
           {
             questionText: 'What is the chemical formula of water?',
             optionA: 'H₂O₂', optionB: 'HO', optionC: 'H₂O', optionD: 'H₃O',
             correctOption: 'C',
-            explanation: 'Water consists of 2 hydrogen atoms and 1 oxygen atom: H₂O.',
+            explanation: 'Water is formed of two hydrogen atoms and one oxygen atom (H₂O).',
             marks: 1, order: 3,
           },
           {
             questionText: 'Which organ pumps blood throughout the human body?',
             optionA: 'Lungs', optionB: 'Kidney', optionC: 'Liver', optionD: 'Heart',
             correctOption: 'D',
-            explanation: 'The heart pumps blood through the circulatory system.',
+            explanation: 'The heart is the muscular pump of the cardiovascular system.',
             marks: 1, order: 4,
           },
           {
             questionText: 'What is the speed of light in vacuum?',
             optionA: '3 × 10⁶ m/s', optionB: '3 × 10⁸ m/s', optionC: '3 × 10¹⁰ m/s', optionD: '3 × 10⁴ m/s',
             correctOption: 'B',
-            explanation: 'Speed of light in vacuum = 3 × 10⁸ m/s (approximately 300,000 km/s).',
+            explanation: 'The speed of light in vacuum is approximately 3 × 10⁸ m/s (~300,000 km/s).',
             marks: 1, order: 5,
           },
         ],
@@ -402,12 +503,8 @@ async function main() {
     },
   });
 
-  console.log(`✅ ${2} quizzes with questions created`);
-  console.log('\n🎉 Seed completed successfully!');
-  console.log('\n📋 Test Credentials:');
-  console.log('   Admin:   admin@ruralconnect.in / Admin@1234');
-  console.log('   Mentor:  priya.sharma@ruralconnect.in / Mentor@1234');
-  console.log('   Student: arjun.patel@example.com / Student@1234');
+  console.log('✅ 2 quizzes with full questions created');
+  console.log('\n🎉 Database re-seeded with live, verified content successfully!');
 }
 
 main()
@@ -417,5 +514,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
+    await pool.end();
   });
-

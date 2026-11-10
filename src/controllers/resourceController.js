@@ -6,7 +6,7 @@ const { getPrismaClient } = require('../db');
 async function getResources(req, res, next) {
   try {
     const prisma = getPrismaClient();
-    const { search, subject, type, difficulty, page = 1, limit = 12 } = req.query;
+    const { search, subject, type, difficulty, page = 1, limit = 24 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const where = {
@@ -81,7 +81,7 @@ async function toggleBookmark(req, res, next) {
   }
 }
 
-// POST /api/resources/:id/complete
+// POST /api/resources/:id/complete (Toggles completed status with visual tick)
 async function markComplete(req, res, next) {
   try {
     const prisma = getPrismaClient();
@@ -90,7 +90,9 @@ async function markComplete(req, res, next) {
     });
 
     if (existing) {
-      return res.json({ success: true, message: 'Already marked as complete.' });
+      // Toggle off if already completed
+      await prisma.completedResource.delete({ where: { id: existing.id } });
+      return res.json({ success: true, completed: false, message: 'Resource unmarked from completed.' });
     }
 
     await prisma.completedResource.create({ data: { userId: req.user.id, resourceId: req.params.id } });
@@ -103,13 +105,13 @@ async function markComplete(req, res, next) {
       },
     });
 
-    res.json({ success: true, message: 'Resource marked as complete!' });
+    res.json({ success: true, completed: true, message: 'Resource marked as completed! ✓' });
   } catch (err) {
     next(err);
   }
 }
 
-// GET /api/resources/bookmarks
+// GET /api/resources/me/bookmarks
 async function getBookmarks(req, res, next) {
   try {
     const prisma = getPrismaClient();
@@ -119,6 +121,21 @@ async function getBookmarks(req, res, next) {
       orderBy: { createdAt: 'desc' },
     });
     res.json({ success: true, data: bookmarks });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// GET /api/resources/me/completed
+async function getCompleted(req, res, next) {
+  try {
+    const prisma = getPrismaClient();
+    const completed = await prisma.completedResource.findMany({
+      where: { userId: req.user.id },
+      include: { resource: true },
+      orderBy: { completedAt: 'desc' },
+    });
+    res.json({ success: true, data: completed });
   } catch (err) {
     next(err);
   }
@@ -186,6 +203,5 @@ async function deleteResource(req, res, next) {
 
 module.exports = {
   getResources, getResource, toggleBookmark, markComplete,
-  getBookmarks, getSubjects, createResource, updateResource, deleteResource,
+  getBookmarks, getCompleted, getSubjects, createResource, updateResource, deleteResource,
 };
-
