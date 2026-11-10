@@ -124,3 +124,4 @@ function redirectByRole(role) {
     window.location.href = '/';
   }
 }
+

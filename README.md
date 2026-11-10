@@ -168,3 +168,4 @@ Visit **http://localhost:3000** in your web browser.
 | **Platform Admin** | `admin@ruralconnect.in` | `Admin@1234` |
 | **Mentor / Teacher** | `priya.sharma@ruralconnect.in` | `Mentor@1234` |
 | **Student** | `arjun.patel@example.com` | `Student@1234` |
+
